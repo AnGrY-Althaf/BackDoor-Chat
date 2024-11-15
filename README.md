@@ -1,30 +1,49 @@
-# Backdoor CLI Chat
+# BackDoor CLI Chat Server
 
-A command-line interface chat application with real-time messaging capabilities.
+A secure command-line interface chat server with authentication, private messaging, file transfers, and comprehensive logging.
 
-![Backdoor Chat Demo](demo.gif)
+![BackDoor Chat Demo](demo.gif)
 
 ## Features
 
-- 🔒 Client-server architecture
-- 🚀 Real-time messaging
-- 💻 Command-line interface
-- 📝 Multiple commands support
-- 🌐 Network-capable (local and internet)
+### Core Features
+- 🔐 Role-based authentication system (admin/user)
+- 💬 Real-time messaging
+- 📝 Private messaging system
+- 📁 File transfer support (up to 5MB)
+- 📊 Comprehensive logging system
+- 🛡️ Advanced admin controls
 
-### Available Commands
+### Security Features
+- User authentication with access keys
+- IP banning system
+- User muting capability
+- Connection attempt logging
+- Maximum login attempts (3)
 
-- `!help` - Show all available commands
-- `!active` - List all active users in the chat
-- `!clear` - Clear the screen
-- `!whoami` - Show your current username
-- `!time` - Show current server time
+### Admin Commands
+- `!kick <user>` - Kick a user from the chat
+- `!ban <user>` - Ban a user's IP address
+- `!mute <user>` - Mute a user
+- `!unmute <user>` - Unmute a user
+- `!logs` - View recent server logs
+
+### User Commands
+- `!help` - Show available commands
+- `!active` - Show active users
+- `!clear` - Clear screen
+- `!whoami` - Show your username and role
+- `!time` - Show server time
 - `!room` - Show current room name
+- `!pm <user> <message>` - Send private message
+- `!sendfile <user> <filepath>` - Send file to user
+- `!receivefile` - Accept pending file transfer
+- `!quit` - Exit chat
 
 ## Requirements
 
 - Python 3.6+
-- No external dependencies required (uses standard library only)
+- No external dependencies required (uses standard library)
 
 ## Installation
 
@@ -48,35 +67,69 @@ python --version
 python chat.py --server
 
 # Custom port and room name
-python chat.py --server --port 5000 --room hackroom
+python chat.py --port 5000 --room hackroom
 
 # Bind to specific IP
-python chat.py --server --host 0.0.0.0 --port 5000
+python chat.py --host 0.0.0.0 --port 5000
 ```
 
-### Connecting as a Client
+### Connecting to the Server
 
+Users can connect using standard terminal tools:
 ```bash
-# Connect to local server
-python chat.py
-
-# Connect to specific server
-python chat.py --host server-ip --port 5000
+nc localhost 55555
+# or
+telnet localhost 55555
 ```
 
-### Command Line Arguments
+### Authentication
 
-- `--server`: Run as server
-- `--host`: Host address to connect to or bind on (default: 127.0.0.1)
-- `--port`: Port number (default: 55555)
-- `--room`: Chat room name (default: main)
+Default access keys:
+- Admin: `backdoor123`
+- User: `user123`
+
+### File Transfer
+
+The server supports file transfers up to 5MB:
+1. Sender: `!sendfile username filepath`
+2. Receiver: `!receivefile`
+
+Files are automatically renamed with timestamps to prevent conflicts.
+
+## Logging System
+
+The server maintains two types of logs in the `logs` directory:
+- `chat_YYYYMMDD.log`: Chat messages and commands
+- `events_YYYYMMDD.log`: Server events and actions
+
+Logs older than 7 days are automatically cleaned up.
+
+### Log Format
+```json
+// Chat log entry
+{
+    "timestamp": "2024-01-16T10:15:30.123",
+    "type": "message",
+    "nickname": "user",
+    "message": "Hello everyone!"
+}
+
+// Event log entry
+{
+    "timestamp": "2024-01-16T10:15:00.000",
+    "type": "user_connected",
+    "details": {
+        "nickname": "user",
+        "ip": "192.168.1.100",
+        "role": "user"
+    }
+}
+```
 
 
 ## Future Features
 
 - [ ] End-to-end encryption
-- [ ] Private messaging
-- [ ] File sharing capabilities
 - [ ] Multiple chat rooms
-- [ ] User authentication
-- [ ] Custom themes
+- [ ] Custom user profiles
+- [ ] File encryption
